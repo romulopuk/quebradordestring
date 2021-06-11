@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #charlength {
+            margin-left: 800px;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebrador de String</title>
+</head>
+<body>
+    <h1>Quebrador de String</h1>
+    <div>
+        <textarea id="texttoconvert" style="resize: none" 
+            placeholder="Insira o texto" cols="120" rows="15"></textarea>
+        <p>
+        <span id="charlength"></span>
+        <p>
+        <input type="number" id="limitChar" placeholder="Caracteres por linha">
+        <button id="botaoConvert">Quebrar Linhas</button>
+        <br />
+        <br />
+
+        <div id="result">
+            
+        </div>
+    </div>
+    <script>
+        const divResult = document.querySelector("#result");
+        const charLength = document.querySelector("#charlength");
+        const textToConvert = document.querySelector("#texttoconvert");
+        const botaoConvert = document.querySelector("#botaoConvert");
+        const limitChar = document.querySelector("#limitChar");
+
+        let count;
+        let charNum;
+        let globalResult = [];
+
+        textToConvert.addEventListener('input', (() => {
+            count = textToConvert.value.length;
+            charLength.innerHTML = count;
+        }));
+
+        limitChar.addEventListener('input', (() => {
+            charNum = limitChar.value
+        }));
+
+        botaoConvert.addEventListener('click', (() => {
+            let textValue = textToConvert.value;
+
+            let textQtd = textValue.length
+            // Array de Char
+            let arrayText = textValue.split("");
+            
+            newArr = [];
+            finalArr = [];
+            
+            for (let i = 0; i < textQtd; i++) {
+                
+                if (textValue != 0 || textValue != "") {
+                    
+                    
+                    if (textValue.length >= charNum) {
+                        let newStrI = textValue.substr(0, charNum);
+                        let newStrF = textValue.substring(charNum);
+                        textValue = newStrF
+                        globalResult.push(`dbms_lob.append(l_clob, '${newStrI}');`);
+                        
+                    }
+                    else if (textValue.length > 0 && textValue.length < charNum) {
+                        globalResult.push(`dbms_lob.append(l_clob, '${textValue}');`);
+                        textValue = "";
+                    }
+                    else if (textValue.length == 0) {
+                        // divResult.textContent = '';
+                        renderEmpty();
+                    }
+                }
+
+            }
+            render();
+        }));
+
+        function render() {
+            let ul = document.createElement('ul');
+
+            for (let i = 0; i < globalResult.length; i++) {
+                let currentResult = globalResult[i];
+                let li = document.createElement('li');
+                li.textContent = currentResult;
+                ul.appendChild(li)
+            }
+
+            divResult.appendChild(ul);
+        }
+
+        function renderEmpty() {
+            divResult.textContent = '';
+            ul.textContent = '';
+        }
+    </script>
+</body>
+</html>
